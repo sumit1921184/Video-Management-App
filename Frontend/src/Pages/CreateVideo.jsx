@@ -1,5 +1,5 @@
 import React from 'react'
-import CreateVideo from '../Components/CreateVideo';
+import CreateVideo from '../components/CreateVideo';
 
 function CreateVideoPage() {
   return (
