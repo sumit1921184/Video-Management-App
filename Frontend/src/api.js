@@ -1,0 +1,1 @@
+export const url2 = "https://video-management-app-3.onrender.com/";
