@@ -44,7 +44,6 @@ const CreateVideo = () => {
       const responseData = await res.json();
       if (res.status === 201) {
         toast({
-          title: "Contest created successfully",
           description: responseData.message,
           status: "success",
           isClosable: true,
@@ -53,7 +52,7 @@ const CreateVideo = () => {
         setVideoFile(null);
       } else {
         toast({
-          title: "Failed to create contest",
+          
           description: responseData.error || "Something went wrong.",
           status: "error",
           isClosable: true,
@@ -62,8 +61,8 @@ const CreateVideo = () => {
     } catch (err) {
       console.error(err);
       toast({
-        title: "An error occurred",
-        description: "Unable to create the contest. Please try again later.",
+        
+        description: "Unable to add the video. Please try again later.",
         status: "error",
         isClosable: true,
       });
@@ -74,7 +73,7 @@ const CreateVideo = () => {
 
   const onSubmit = (data) => {
     showModal({
-      body: <p>Do you want to create this Event?</p>,
+      body: <p>Do you want to add this video?</p>,
       onSave: () => handleCreateEvent(data),
     });
   };
