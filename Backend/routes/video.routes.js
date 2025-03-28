@@ -39,58 +39,49 @@ VideoRouter.post("/upload", auth, upload.single("video"), async (req, res) => {
     }
 });
 
-// Get user-specific videos with filtering & pagination
-// VideoRouter.get("/",auth, async (req, res) => {
-//     const  userId  = req.id;
-//     const { page = 1, limit = 5, search = "" } = req.query;
 
-//     try {
-//         const videos = await VideoModel.find({
-//             userId,
-//             title: { $regex: search, $options: "i" }
-//         })
-//         .limit(limit * 1)
-//         .skip((page - 1) * limit);
-
-//         res.json(videos);
-//     } catch (error) {
-//         res.status(500).json({ error: "Error fetching videos" });
-//     }
-// });
-
-VideoRouter.get("/", async (req, res) => {
-    try {
+  
+VideoRouter.get("/",auth, async (req, res) => {
+  try {
       const { search, date, page = 1, limit = 10 } = req.query;
-      const query = {};
-  
+
+     
+      const userId = req.id; 
+
+      if (!userId) {
+          return res.status(401).json({ error: "Unauthorized: User not logged in" });
+      }
+
+      const query = { userId }; 
+
       if (search) {
-        query.title = { $regex: search, $options: "i" };
+          query.title = { $regex: search, $options: "i" };
       }
-  
+
       if (date) {
-        // Convert date to proper format (start and end of the day)
-        const startDate = new Date(date);
-        startDate.setUTCHours(0, 0, 0, 0); // Start of the day
-  
-        const endDate = new Date(date);
-        endDate.setUTCHours(23, 59, 59, 999); // End of the day
-  
-        query.uploadDate = { $gte: startDate, $lte: endDate };
+          const startDate = new Date(date);
+          startDate.setUTCHours(0, 0, 0, 0);
+
+          const endDate = new Date(date);
+          endDate.setUTCHours(23, 59, 59, 999);
+
+          query.uploadDate = { $gte: startDate, $lte: endDate };
       }
-  
+
       const totalVideos = await VideoModel.countDocuments(query);
       const totalPages = Math.ceil(totalVideos / limit);
+
       const videos = await VideoModel.find(query)
-        .skip((page - 1) * limit)
-        .limit(parseInt(limit));
-  
+          .skip((page - 1) * limit)
+          .limit(parseInt(limit));
+
       res.json({ videos, totalPages });
-    } catch (error) {
-      console.error("Error fetching videos:", error);
+  } catch (error) {
+      console.error("Error fetching user-specific videos:", error);
       res.status(500).json({ error: "Internal Server Error" });
-    }
-  });
-  
+  }
+});
+
   
 
 module.exports = {
